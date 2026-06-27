@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fogos Ativos</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Fogos Ativos</h1>
+    <div class="concelho-selector">
+      <label for="concelho">Concelho</label>
+      <select id="concelho"></select>
+    </div>
+  </header>
+
+  <main>
+    <div id="status" class="status" hidden></div>
+    <div id="incidents" class="incidents"></div>
+  </main>
+
+  <footer>
+    <p>Dados: <a href="https://fogos.pt" target="_blank" rel="noopener">fogos.pt</a> / ANEPC</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
