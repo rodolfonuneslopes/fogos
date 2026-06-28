@@ -1,86 +1,74 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  font-family: system-ui, sans-serif;
-  background: #f5f5f5;
-  color: #1a1a1a;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 header {
-  background: #c0392b;
-  color: #fff;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
-header h1 { font-size: 1.4rem; font-weight: 700; }
-
-.concelho-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.concelho-selector label { font-size: 0.9rem; opacity: 0.85; }
-
-.concelho-selector select {
-  padding: 0.3rem 0.5rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.95rem;
-  cursor: pointer;
+header select {
+  margin-bottom: 0;
+  min-width: 16rem;
 }
 
 main {
   flex: 1;
-  padding: 1.5rem;
-  max-width: 800px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.status {
-  text-align: center;
-  padding: 2rem;
-  color: #555;
-  font-size: 1rem;
-}
-
-.incidents { display: flex; flex-direction: column; gap: 0.75rem; }
-
-.incident-card {
-  background: #fff;
-  border-left: 4px solid #c0392b;
-  border-radius: 4px;
-  padding: 1rem 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-.incident-card h2 { font-size: 1rem; margin-bottom: 0.4rem; }
-.incident-card .meta { font-size: 0.85rem; color: #555; }
-.incident-card .meta span + span::before { content: " · "; }
-
-.badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  background: #fde8e8;
-  color: #c0392b;
-  margin-bottom: 0.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 footer {
+  border-top: 1px solid var(--pico-muted-border-color);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
   text-align: center;
-  padding: 0.75rem;
-  font-size: 0.8rem;
-  color: #888;
 }
-footer a { color: #888; }
+
+/* Incident cards */
+#incidents { display: flex; flex-direction: column; gap: 0.5rem; }
+
+#incidents article {
+  margin-bottom: 0;
+}
+
+#incidents article header {
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+#incidents article header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+#incidents article footer {
+  border-top: 1px solid var(--pico-muted-border-color);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
+  white-space: nowrap;
+}
+
+.meta { margin: 0; color: var(--pico-muted-color); font-size: 0.875rem; }
+
+/* Status message (loading / no fires) */
+#status { text-align: center; color: var(--pico-muted-color); padding: 2rem 0; }

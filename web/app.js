@@ -23,6 +23,7 @@ async function loadIncidents(concelho) {
 
 function renderIncidents(incidents) {
   statusEl.hidden = true;
+  statusEl.removeAttribute('aria-busy');
   incidentsEl.innerHTML = '';
 
   if (!incidents || incidents.length === 0) {
@@ -33,15 +34,17 @@ function renderIncidents(incidents) {
 
   for (const inc of incidents) {
     const card = document.createElement('article');
-    card.className = 'incident-card';
+    const meiosMeta = inc.meios
+      ? `${inc.meios.operativos} operativos · ${inc.meios.terrestres} terrestres · ${inc.meios.aereos} aéreos`
+      : '';
     card.innerHTML = `
-      <div class="badge">${esc(inc.natureza || 'Incêndio')}</div>
-      <h2>${esc(inc.freguesia || '—')}</h2>
-      <div class="meta">
-        <span>${esc(inc.status || '—')}</span>
-        ${inc.meios ? `<span>${inc.meios.operativos} operativos · ${inc.meios.terrestres} terrestres · ${inc.meios.aereos} aéreos</span>` : ''}
-        ${inc.datehour ? `<span>${esc(inc.datehour)}</span>` : ''}
-      </div>
+      <header>
+        <h3>${esc(inc.freguesia || '—')}</h3>
+        <span class="status-badge">${esc(inc.status || '—')}</span>
+      </header>
+      <p class="meta">${esc(inc.natureza || 'Incêndio')}</p>
+      ${meiosMeta ? `<p class="meta">${meiosMeta}</p>` : ''}
+      ${inc.datehour ? `<footer><small>Atualizado: ${esc(inc.datehour)}</small></footer>` : ''}
     `;
     incidentsEl.appendChild(card);
   }
@@ -49,14 +52,16 @@ function renderIncidents(incidents) {
 
 function showError(msg) {
   incidentsEl.innerHTML = '';
+  statusEl.removeAttribute('aria-busy');
   statusEl.textContent = msg;
   statusEl.hidden = false;
 }
 
 function showLoading() {
+  incidentsEl.innerHTML = '';
+  statusEl.setAttribute('aria-busy', 'true');
   statusEl.textContent = 'A carregar...';
   statusEl.hidden = false;
-  incidentsEl.innerHTML = '';
 }
 
 async function refresh() {

@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="auto">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fogos Ativos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.red.min.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>Fogos Ativos</h1>
-    <div class="concelho-selector">
-      <label for="concelho">Concelho</label>
-      <select id="concelho"></select>
-    </div>
+  <header class="container-fluid">
+    <nav>
+      <ul>
+        <li><strong>🔥 Fogos Ativos</strong></li>
+      </ul>
+      <ul>
+        <li>
+          <select id="concelho" aria-label="Escolha um concelho"></select>
+        </li>
+      </ul>
+    </nav>
   </header>
 
-  <main>
-    <div id="status" class="status" hidden></div>
-    <div id="incidents" class="incidents"></div>
+  <main class="container">
+    <p id="status" hidden></p>
+    <div id="incidents"></div>
   </main>
 
-  <footer>
-    <p>Dados: <a href="https://fogos.pt" target="_blank" rel="noopener">fogos.pt</a> / ANEPC</p>
+  <footer class="container-fluid">
+    <small>Dados: <a href="https://fogos.pt" target="_blank" rel="noopener">fogos.pt</a> / ANEPC</small>
   </footer>
 
   <script src="app.js"></script>
