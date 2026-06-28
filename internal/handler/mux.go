@@ -8,8 +8,7 @@ import (
 )
 
 // NewMux wires all routes and returns the root handler.
-func NewMux(baseURL, token string) http.Handler {
-	client := fogos.New(baseURL, token)
+func NewMux(client fogos.Client) http.Handler {
 	cache := newIncidentCache()
 
 	mux := http.NewServeMux()
