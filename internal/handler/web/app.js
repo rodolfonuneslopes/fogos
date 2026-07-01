@@ -78,8 +78,19 @@ async function refresh() {
 
 function scheduleRefresh() {
   clearInterval(refreshTimer);
-  refreshTimer = setInterval(refresh, REFRESH_INTERVAL);
+  if (!document.hidden) {
+    refreshTimer = setInterval(refresh, REFRESH_INTERVAL);
+  }
 }
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    clearInterval(refreshTimer);
+  } else {
+    refresh();
+    scheduleRefresh();
+  }
+});
 
 async function onConcelhoChange() {
   showLoading();
