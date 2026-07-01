@@ -1,17 +1,10 @@
 # fogos
 
-An SPA to show active wildfires in a given Portuguese município (concelho), powered by [fogos.pt](https://fogos.pt) / ANEPC data.
+An SPA to show active wildfires in a given Portuguese city (concelho), powered by [fogos.pt](https://fogos.pt) / ANEPC data.
 
 ## Running locally
 
-Copy the example env file and fill in your fogos.pt API token:
-
-```bash
-cp .env.example .env
-# edit .env and set FOGOS_TOKEN
-```
-
-Then:
+The fogos.pt API is public and requires no token. The simplest way to run:
 
 ```bash
 make run
@@ -19,21 +12,25 @@ make run
 
 The server listens on `:8080` by default (`LISTEN_ADDR` to override).
 
-## Mock mode
+## Modes
 
-No API token yet? Run with fake data to develop and preview the UI:
+Three modes are available, controlled entirely by environment variables:
 
-```bash
-FOGOS_MOCK=true make run
-```
+| Mode | How to activate |
+|---|---|
+| Real API, no auth | (nothing set — the default) |
+| Real API, with auth token | `FOGOS_TOKEN=your_token` |
+| Mock (no network calls) | `FOGOS_MOCK=true` |
 
-In mock mode no real API calls are made. Most concelhos return two sample incidents; selecting **Évora** returns an empty list so you can see the "no active fires" state.
+**Mock mode** returns fake incidents for every concelho and is useful for UI development without any network dependency. Most concelhos return two sample incidents; selecting **Évora** returns an empty list so you can see the "no active fires" state.
+
+See [.env.example](.env.example) for a reference configuration.
 
 ## Available make targets
 
 | Target | Description |
 |--------|-------------|
-| `make run` | Run the server (requires `.env`) |
+| `make run` | Run the server |
 | `make build` | Compile the binary |
 | `make test` | Run all tests |
 | `make fmt` | Format source with `gofmt` |

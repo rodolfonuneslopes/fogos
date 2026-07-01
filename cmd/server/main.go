@@ -19,10 +19,12 @@ func main() {
 		client = fogos.MockClient{}
 	} else {
 		token := os.Getenv("FOGOS_TOKEN")
-		if token == "" {
-			log.Fatal("FOGOS_TOKEN environment variable is required (or set FOGOS_MOCK=true)")
-		}
 		baseURL := envOrDefault("FOGOS_BASE_URL", "https://api.fogos.pt")
+		if token != "" {
+			log.Println("using real API with auth token")
+		} else {
+			log.Println("using real API without auth token")
+		}
 		client = fogos.New(baseURL, token)
 	}
 
