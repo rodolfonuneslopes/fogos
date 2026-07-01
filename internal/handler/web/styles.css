@@ -51,12 +51,6 @@ footer {
   font-size: 1rem;
 }
 
-#incidents article footer {
-  border-top: 1px solid var(--pico-muted-border-color);
-  padding-top: 0.5rem;
-  margin-top: 0.5rem;
-  text-align: left;
-}
 
 .status-badge {
   font-size: 0.75rem;
@@ -69,6 +63,8 @@ footer {
 }
 
 .meta { margin: 0; color: var(--pico-muted-color); font-size: 0.875rem; }
+.meta.meios { font-size: 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+.meta.meios .date { font-size: 0.875rem; }
 
 /* Status message (loading / no fires) */
 #status { text-align: center; color: var(--pico-muted-color); padding: 2rem 0; }
