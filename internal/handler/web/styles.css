@@ -63,6 +63,10 @@ footer {
 }
 
 .meta { margin: 0; color: var(--pico-muted-color); font-size: 0.875rem; }
+
+.incident-details { margin-top: 0.5rem; border-top: 1px solid var(--pico-muted-border-color); padding-top: 0.5rem; }
+.incident-details summary { font-size: 0.875rem; color: var(--pico-muted-color); cursor: pointer; }
+.incident-details p { margin: 0.25rem 0 0; font-size: 0.875rem; }
 .meta.meios { font-size: 1.25rem; display: flex; justify-content: space-between; align-items: center; }
 .meta.meios .date { font-size: 0.875rem; }
 

@@ -46,7 +46,7 @@ function renderIncidents(incidents) {
         <span>${meiosMeta}</span>
         ${inc.date ? `<span class="date">${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
       </p>
-      ${inc.extra ? `<p class="meta extra">${esc(inc.extra)}</p>` : ''}
+      ${inc.extra ? `<details class="incident-details"><summary>Informações</summary><p>${esc(inc.extra)}</p></details>` : ''}
     `;
     incidentsEl.appendChild(card);
   }
