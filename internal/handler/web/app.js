@@ -1,5 +1,13 @@
 'use strict';
 
+const STATUS_COLORS = {
+  4: '#FF6E02', // Despacho de 1º Alerta
+  5: '#B81E1F', // Em Curso
+  7: '#FF6E02', // Em Resolução
+  8: '#BDBDBD', // Conclusão
+  9: '#6ABF59', // Vigilância
+};
+
 const DEFAULT_CONCELHO = 'Castelo Branco';
 const REFRESH_INTERVAL = 60_000;
 
@@ -40,11 +48,11 @@ function renderIncidents(incidents) {
     card.innerHTML = `
       <header>
         <h3>${esc(inc.freguesia || '—')}</h3>
-        <span class="status-badge">${esc(inc.status || '—')}</span>
+        <span class="status-badge" style="background:${STATUS_COLORS[inc.statusCode] || '#BDBDBD'}">${esc(inc.status || '—')}</span>
       </header>
       <p class="meta meios">
         <span>${meiosMeta}</span>
-        ${inc.date ? `<span class="date">${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
+        ${inc.date ? `<span class="date">Início: ${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
       </p>
       ${inc.extra ? `<details class="incident-details"><summary>Informações</summary><p>${esc(inc.extra)}</p></details>` : ''}
     `;
