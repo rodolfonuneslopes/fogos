@@ -1,60 +1,113 @@
 'use strict';
 
-const DEFAULT_CONCELHO = 'Castelo Branco';
-const REFRESH_INTERVAL = 60_000;
+const STATUS_COLORS = {
+  4: '#FF6E02', // Despacho de 1º Alerta
+  5: '#B81E1F', // Em Curso
+  7: '#FF6E02', // Em Resolução
+  8: '#BDBDBD', // Conclusão
+  9: '#6ABF59', // Vigilância
+};
 
-const select = document.getElementById('concelho');
-const statusEl = document.getElementById('status');
+// Lower number = shown first
+const SEVERITY_ORDER = { 5: 1, 4: 2, 7: 3, 9: 4, 8: 5 };
+
+const distritоEl = document.getElementById('distrito');
+const concelhoEl = document.getElementById('concelho');
+const statusEl  = document.getElementById('status');
 const incidentsEl = document.getElementById('incidents');
 
+let allIncidents = [];
 let refreshTimer = null;
+const REFRESH_INTERVAL = 60_000;
 
-async function loadConcelhos() {
-  const res = await fetch('/api/concelhos');
-  if (!res.ok) throw new Error('Failed to load concelhos');
-  return res.json();
-}
-
-async function loadIncidents(concelho) {
-  const res = await fetch(`/api/incidents?concelho=${encodeURIComponent(concelho)}`);
+async function fetchIncidents() {
+  const res = await fetch('/api/incidents');
   if (!res.ok) throw new Error(`Server error: ${res.status}`);
   return res.json();
 }
 
-function renderIncidents(incidents) {
+function sortIncidents(incidents) {
+  return [...incidents].sort((a, b) => {
+    const sa = SEVERITY_ORDER[a.statusCode] ?? 99;
+    const sb = SEVERITY_ORDER[b.statusCode] ?? 99;
+    if (sa !== sb) return sa - sb;
+    return (b.man + b.terrain + b.aerial) - (a.man + a.terrain + a.aerial);
+  });
+}
+
+function filteredIncidents() {
+  const distrito = distritоEl.value;
+  const concelho = concelhoEl.value;
+  return allIncidents.filter(inc =>
+    (!distrito || inc.district === distrito) &&
+    (!concelho || inc.concelho === concelho)
+  );
+}
+
+function populateDistrito() {
+  const current = distritоEl.value;
+  const districts = [...new Set(allIncidents.map(i => i.district).filter(Boolean))].sort();
+  distritоEl.innerHTML = '<option value="">Todos os distritos</option>';
+  for (const d of districts) {
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = d;
+    if (d === current) opt.selected = true;
+    distritоEl.appendChild(opt);
+  }
+}
+
+function populateConcelho() {
+  const distrito = distritоEl.value;
+  const current = concelhoEl.value;
+  const source = distrito
+    ? allIncidents.filter(i => i.district === distrito)
+    : allIncidents;
+  const concelhos = [...new Set(source.map(i => i.concelho).filter(Boolean))].sort();
+  concelhoEl.innerHTML = '<option value="">Todos os concelhos</option>';
+  for (const c of concelhos) {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    if (c === current) opt.selected = true;
+    concelhoEl.appendChild(opt);
+  }
+  concelhoEl.disabled = concelhos.length === 0;
+}
+
+function render() {
+  const sorted = sortIncidents(filteredIncidents());
   statusEl.hidden = true;
   statusEl.removeAttribute('aria-busy');
   incidentsEl.innerHTML = '';
 
-  if (!incidents || incidents.length === 0) {
-    statusEl.textContent = 'Sem fogos ativos neste concelho.';
+  if (sorted.length === 0) {
+    statusEl.textContent = 'Sem fogos ativos.';
     statusEl.hidden = false;
     return;
   }
 
-  for (const inc of incidents) {
+  for (const inc of sorted) {
     const card = document.createElement('article');
     const meiosMeta = (inc.man || inc.terrain || inc.aerial)
-      ? `${inc.man} operativos · ${inc.terrain} terrestres · ${inc.aerial} aéreos`
+      ? `🧑‍🚒 ${inc.man} · 🚒 ${inc.terrain} · 🚁 ${inc.aerial}`
       : '';
+    const title = concelhoEl.value
+      ? esc(inc.freguesia || '—')
+      : esc((inc.concelho ? inc.concelho + ' — ' : '') + (inc.freguesia || '—'));
     card.innerHTML = `
       <header>
-        <h3>${esc(inc.freguesia || '—')}</h3>
-        <span class="status-badge">${esc(inc.status || '—')}</span>
+        <h3>${title}</h3>
+        <span class="status-badge" style="background:${STATUS_COLORS[inc.statusCode] || '#BDBDBD'}">${esc(inc.status || '—')}</span>
       </header>
-      <p class="meta">${esc(inc.natureza || 'Incêndio')}</p>
-      ${meiosMeta ? `<p class="meta">${meiosMeta}</p>` : ''}
-      ${inc.date ? `<footer><small>Início: ${esc(inc.date)} ${esc(inc.hour)}</small></footer>` : ''}
+      <p class="meta meios">
+        <span>${meiosMeta}</span>
+        ${inc.date ? `<span class="date">Início: ${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
+      </p>
+      ${inc.extra ? `<details class="incident-details"><summary>Informações</summary><p>${esc(inc.extra)}</p></details>` : ''}
     `;
     incidentsEl.appendChild(card);
   }
-}
-
-function showError(msg) {
-  incidentsEl.innerHTML = '';
-  statusEl.removeAttribute('aria-busy');
-  statusEl.textContent = msg;
-  statusEl.hidden = false;
 }
 
 function showLoading() {
@@ -64,12 +117,19 @@ function showLoading() {
   statusEl.hidden = false;
 }
 
+function showError(msg) {
+  incidentsEl.innerHTML = '';
+  statusEl.removeAttribute('aria-busy');
+  statusEl.textContent = msg;
+  statusEl.hidden = false;
+}
+
 async function refresh() {
-  const concelho = select.value;
-  if (!concelho) return;
   try {
-    const incidents = await loadIncidents(concelho);
-    renderIncidents(incidents);
+    allIncidents = await fetchIncidents();
+    populateDistrito();
+    populateConcelho();
+    render();
   } catch (err) {
     showError('Erro ao obter dados. Tente novamente.');
     console.error(err);
@@ -92,30 +152,16 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-async function onConcelhoChange() {
+async function init() {
   showLoading();
+  distritоEl.addEventListener('change', () => {
+    concelhoEl.value = '';
+    populateConcelho();
+    render();
+  });
+  concelhoEl.addEventListener('change', render);
   await refresh();
   scheduleRefresh();
-}
-
-async function init() {
-  try {
-    const concelhos = await loadConcelhos();
-    for (const c of concelhos) {
-      const opt = document.createElement('option');
-      opt.value = c;
-      opt.textContent = c;
-      if (c === DEFAULT_CONCELHO) opt.selected = true;
-      select.appendChild(opt);
-    }
-  } catch (err) {
-    showError('Erro ao carregar lista de concelhos.');
-    console.error(err);
-    return;
-  }
-
-  select.addEventListener('change', onConcelhoChange);
-  await onConcelhoChange();
 }
 
 function esc(str) {

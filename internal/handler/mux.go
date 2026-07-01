@@ -26,10 +26,6 @@ func NewMux(client fogos.Client) http.Handler {
 func incidentsHandler(client fogos.Client, cache *incidentCache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		concelho := r.URL.Query().Get("concelho")
-		if concelho == "" {
-			http.Error(w, "missing concelho parameter", http.StatusBadRequest)
-			return
-		}
 
 		if cached, ok := cache.get(concelho); ok {
 			writeJSONBytes(w, cached)

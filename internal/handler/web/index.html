@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fogos Ativos</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.red.min.css" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <header class="container-fluid">
@@ -15,7 +15,14 @@
       </ul>
       <ul>
         <li>
-          <select id="concelho" aria-label="Escolha um concelho"></select>
+          <select id="distrito" aria-label="Distrito">
+            <option value="">Todos os distritos</option>
+          </select>
+        </li>
+        <li>
+          <select id="concelho" aria-label="Concelho" disabled>
+            <option value="">Todos os concelhos</option>
+          </select>
         </li>
       </ul>
     </nav>
@@ -30,6 +37,6 @@
     <small>Dados: <a href="https://fogos.pt" target="_blank" rel="noopener">fogos.pt</a> / ANEPC</small>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
