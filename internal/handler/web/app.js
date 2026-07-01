@@ -43,7 +43,9 @@ function renderIncidents(incidents) {
         <span class="status-badge">${esc(inc.status || '—')}</span>
       </header>
       <p class="meta">${esc(inc.natureza || 'Incêndio')}</p>
+      ${inc.detailLocation ? `<p class="meta">${esc(inc.detailLocation)}</p>` : ''}
       ${meiosMeta ? `<p class="meta">${meiosMeta}</p>` : ''}
+      ${inc.extra ? `<p class="meta extra">${esc(inc.extra)}</p>` : ''}
       ${inc.date ? `<footer><small>Início: ${esc(inc.date)} ${esc(inc.hour)}</small></footer>` : ''}
     `;
     incidentsEl.appendChild(card);
