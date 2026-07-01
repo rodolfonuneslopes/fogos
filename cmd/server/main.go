@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/rodolfonuneslopes/fogos/internal/fogos"
 	"github.com/rodolfonuneslopes/fogos/internal/handler"
@@ -25,10 +26,21 @@ func main() {
 		client = fogos.New(baseURL, token)
 	}
 
-	mux := handler.NewMux(client)
+	srv := &http.Server{
+		Addr:    addr,
+		Handler: handler.NewMux(client),
+		// ReadTimeout caps the time to read the full request including body.
+		// 5s is generous for our header-only GET requests; it stops slow-loris attacks.
+		ReadTimeout: 5 * time.Second,
+		// WriteTimeout covers the time from end of request headers to end of response.
+		// Matches the upstream client timeout (10s) plus a small buffer.
+		WriteTimeout: 10 * time.Second,
+		// IdleTimeout limits how long an idle keep-alive connection is held open.
+		IdleTimeout: 120 * time.Second,
+	}
 
 	log.Printf("listening on %s", addr)
-	if err := http.ListenAndServe(addr, mux); err != nil {
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("server error: %v", err)
 	}
 }
