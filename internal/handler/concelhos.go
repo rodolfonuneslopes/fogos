@@ -59,3 +59,13 @@ var concelhosList = []string{
 	"Vila Real", "Vila Real de Santo António", "Vila Velha de Ródão", "Vila Verde", "Vila Viçosa",
 	"Vimioso", "Vinhais", "Viseu", "Vizela", "Vouzela",
 }
+
+// validConcelhos is a lookup index over concelhosList for O(1) membership
+// checks; built once at init from the slice above.
+var validConcelhos = func() map[string]bool {
+	m := make(map[string]bool, len(concelhosList))
+	for _, c := range concelhosList {
+		m[c] = true
+	}
+	return m
+}()
