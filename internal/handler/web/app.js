@@ -34,8 +34,8 @@ function renderIncidents(incidents) {
 
   for (const inc of incidents) {
     const card = document.createElement('article');
-    const meiosMeta = inc.meios
-      ? `${inc.meios.operativos} operativos · ${inc.meios.terrestres} terrestres · ${inc.meios.aereos} aéreos`
+    const meiosMeta = (inc.man || inc.terrain || inc.aerial)
+      ? `${inc.man} operativos · ${inc.terrain} terrestres · ${inc.aerial} aéreos`
       : '';
     card.innerHTML = `
       <header>
@@ -44,7 +44,7 @@ function renderIncidents(incidents) {
       </header>
       <p class="meta">${esc(inc.natureza || 'Incêndio')}</p>
       ${meiosMeta ? `<p class="meta">${meiosMeta}</p>` : ''}
-      ${inc.datehour ? `<footer><small>Atualizado: ${esc(inc.datehour)}</small></footer>` : ''}
+      ${inc.date ? `<footer><small>Início: ${esc(inc.date)} ${esc(inc.hour)}</small></footer>` : ''}
     `;
     incidentsEl.appendChild(card);
   }
