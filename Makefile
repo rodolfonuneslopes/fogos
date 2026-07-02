@@ -1,7 +1,7 @@
 BINARY := fogos
 CMD    := ./cmd/server
 
-.PHONY: run build test fmt vet
+.PHONY: run build test test-go test-js fmt vet
 
 run: fmt vet
 	go run $(CMD)/...
@@ -9,8 +9,13 @@ run: fmt vet
 build: fmt vet
 	go build -o $(BINARY) $(CMD)/...
 
-test:
+test: test-go test-js
+
+test-go:
 	go test ./...
+
+test-js:
+	node --test test/
 
 fmt:
 	gofmt -w .
