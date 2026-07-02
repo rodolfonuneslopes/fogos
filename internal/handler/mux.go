@@ -20,12 +20,32 @@ func NewMux(client fogos.Client) http.Handler {
 	mux.Handle("GET /api/incidents", incidentsHandler(client, cache))
 	mux.Handle("GET /api/concelhos", concelhosHandler())
 	mux.Handle("/", staticHandler(sub))
-	return mux
+	return securityHeaders(mux)
+}
+
+// securityHeaders sets standard hardening headers on every response. Public
+// TLS is terminated at the Cloudflare Tunnel edge, not in this binary, but
+// Strict-Transport-Security still reaches the browser through the tunnel.
+func securityHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		h := w.Header()
+		h.Set("X-Content-Type-Options", "nosniff")
+		h.Set("Referrer-Policy", "no-referrer")
+		h.Set("Permissions-Policy", "geolocation=(), camera=(), microphone=()")
+		h.Set("X-Frame-Options", "DENY")
+		h.Set("Content-Security-Policy", "default-src 'self'; base-uri 'none'; frame-ancestors 'none'")
+		h.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		next.ServeHTTP(w, r)
+	})
 }
 
 func incidentsHandler(client fogos.Client, cache *incidentCache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		concelho := r.URL.Query().Get("concelho")
+		if concelho != "" && !validConcelhos[concelho] {
+			http.Error(w, "unknown concelho", http.StatusBadRequest)
+			return
+		}
 
 		if cached, ok := cache.get(concelho); ok {
 			writeJSONBytes(w, cached)
