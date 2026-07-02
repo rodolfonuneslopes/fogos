@@ -10,9 +10,35 @@ header {
   padding-bottom: 0.75rem;
 }
 
+header .filters {
+  justify-content: flex-end;
+}
+
 header select {
   margin-bottom: 0;
   min-width: 10rem;
+}
+
+/* Below Pico's own smallest breakpoint, stack the title and both filters
+   full-width instead of squeezing three items into one row — that squeeze
+   was clipping the select text (e.g. "Todos os distritos" -> "Todos os dist"). */
+@media (max-width: 576px) {
+  header nav {
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: 0.5rem;
+  }
+
+  header .filters {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  header select {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 main {
