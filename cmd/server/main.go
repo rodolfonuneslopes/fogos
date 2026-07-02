@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	addr := envOrDefault("LISTEN_ADDR", ":8080")
+	addr := envOrDefault("LISTEN_ADDR", ":8888")
 
 	var client fogos.Client
 	if os.Getenv("FOGOS_MOCK") == "true" {

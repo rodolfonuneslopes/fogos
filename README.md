@@ -10,7 +10,7 @@ The fogos.pt API is public and requires no token. The simplest way to run:
 make run
 ```
 
-The server listens on `:8080` by default (`LISTEN_ADDR` to override).
+The server listens on `:8888` by default (`LISTEN_ADDR` to override).
 
 ## Modes
 
