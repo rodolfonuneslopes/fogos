@@ -1,5 +1,7 @@
 'use strict';
 
+import { sortIncidents, filterIncidents, esc } from './logic.js';
+
 // Maps to CSS classes in styles.css rather than inline styles, since the
 // Content-Security-Policy (default-src 'self') blocks inline style attributes.
 const STATUS_CLASSES = {
@@ -9,9 +11,6 @@ const STATUS_CLASSES = {
   8: 'status-concluded', // Conclusão
   9: 'status-watch',     // Vigilância
 };
-
-// Lower number = shown first
-const SEVERITY_ORDER = { 5: 1, 4: 2, 7: 3, 9: 4, 8: 5 };
 
 const distritоEl = document.getElementById('distrito');
 const concelhoEl = document.getElementById('concelho');
@@ -28,22 +27,8 @@ async function fetchIncidents() {
   return res.json();
 }
 
-function sortIncidents(incidents) {
-  return [...incidents].sort((a, b) => {
-    const sa = SEVERITY_ORDER[a.statusCode] ?? 99;
-    const sb = SEVERITY_ORDER[b.statusCode] ?? 99;
-    if (sa !== sb) return sa - sb;
-    return (b.man + b.terrain + b.aerial) - (a.man + a.terrain + a.aerial);
-  });
-}
-
 function filteredIncidents() {
-  const distrito = distritоEl.value;
-  const concelho = concelhoEl.value;
-  return allIncidents.filter(inc =>
-    (!distrito || inc.district === distrito) &&
-    (!concelho || inc.concelho === concelho)
-  );
+  return filterIncidents(allIncidents, distritоEl.value, concelhoEl.value);
 }
 
 function populateDistrito() {
@@ -166,14 +151,6 @@ async function init() {
   concelhoEl.addEventListener('change', render);
   await refresh();
   scheduleRefresh();
-}
-
-function esc(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 init();
