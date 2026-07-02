@@ -1,11 +1,13 @@
 'use strict';
 
-const STATUS_COLORS = {
-  4: '#FF6E02', // Despacho de 1º Alerta
-  5: '#B81E1F', // Em Curso
-  7: '#FF6E02', // Em Resolução
-  8: '#BDBDBD', // Conclusão
-  9: '#6ABF59', // Vigilância
+// Maps to CSS classes in styles.css rather than inline styles, since the
+// Content-Security-Policy (default-src 'self') blocks inline style attributes.
+const STATUS_CLASSES = {
+  4: 'status-alert',     // Despacho de 1º Alerta
+  5: 'status-active',    // Em Curso
+  7: 'status-resolving', // Em Resolução
+  8: 'status-concluded', // Conclusão
+  9: 'status-watch',     // Vigilância
 };
 
 // Lower number = shown first
@@ -98,7 +100,7 @@ function render() {
     card.innerHTML = `
       <header>
         <h3>${title}</h3>
-        <span class="status-badge" style="background:${STATUS_COLORS[inc.statusCode] || '#BDBDBD'}">${esc(inc.status || '—')}</span>
+        <span class="status-badge ${STATUS_CLASSES[inc.statusCode] || 'status-unknown'}">${esc(inc.status || '—')}</span>
       </header>
       <p class="meta meios">
         <span>${meiosMeta}</span>
