@@ -1,0 +1,7 @@
+.git
+.env
+implementation-docs
+test
+testdata
+*.md
+fogos
