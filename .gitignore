@@ -30,10 +30,6 @@ go.work.sum
 # env file
 .env
 
-# Claude Code session files (local only, not for public repo)
-CLAUDE.md
-PROGRESS.md
-
 # Compiled binary
 fogos
 
