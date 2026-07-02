@@ -108,7 +108,7 @@ function render() {
         </span>
         ${inc.date ? `<span class="date">Início: ${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
       </p>
-      ${inc.extra ? `<details class="incident-details"><summary>Informações</summary><p>${esc(inc.extra)}</p></details>` : ''}
+      ${inc.id ? `<a class="source-link" href="https://fogos.pt/pt/fogo/${encodeURIComponent(inc.id)}/detalhe" target="_blank" rel="noopener noreferrer">Ver mais informações ↗</a>` : ''}
     `;
     incidentsEl.appendChild(card);
   }
