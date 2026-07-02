@@ -4,4 +4,4 @@ implementation-docs
 test
 testdata
 *.md
-fogos
+/fogos
