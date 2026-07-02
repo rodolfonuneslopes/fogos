@@ -1,0 +1,15 @@
+services:
+  fogos:
+    image: ghcr.io/rodolfonuneslopes/fogos:0.1.0
+    # Uncomment to build from source instead of pulling the published image:
+    # build: .
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    environment:
+      LISTEN_ADDR: :8888
+      FOGOS_BASE_URL: https://api.fogos.pt
+      # Real API, with auth token:
+      # FOGOS_TOKEN: your_token_here
+      # Mock mode (no network calls):
+      # FOGOS_MOCK: "true"
