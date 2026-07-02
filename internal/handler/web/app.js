@@ -100,10 +100,12 @@ function render() {
     card.innerHTML = `
       <header>
         <h3>${title}</h3>
-        <span class="status-badge ${STATUS_CLASSES[inc.statusCode] || 'status-unknown'}">${esc(inc.status || '—')}</span>
       </header>
       <p class="meta meios">
-        <span>${meiosMeta}</span>
+        <span class="meios-left">
+          <span class="status-badge ${STATUS_CLASSES[inc.statusCode] || 'status-unknown'}">${esc(inc.status || '—')}</span>
+          <span>${meiosMeta}</span>
+        </span>
         ${inc.date ? `<span class="date">Início: ${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
       </p>
       ${inc.extra ? `<details class="incident-details"><summary>Informações</summary><p>${esc(inc.extra)}</p></details>` : ''}

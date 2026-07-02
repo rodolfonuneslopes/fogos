@@ -78,6 +78,7 @@ footer {
 .incident-details p { margin: 0.25rem 0 0; font-size: 0.875rem; }
 .meta.meios { font-size: 1.25rem; display: flex; justify-content: space-between; align-items: center; }
 .meta.meios .date { font-size: 0.875rem; }
+.meios-left { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
 /* Status message (loading / no fires) */
 #status { text-align: center; color: var(--pico-muted-color); padding: 2rem 0; }
