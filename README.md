@@ -12,6 +12,34 @@ make run
 
 The server listens on `:8888` by default (`LISTEN_ADDR` to override).
 
+## Running with Docker
+
+Pull the published image and run it directly — no Go toolchain needed:
+
+```bash
+docker run --rm -p 8888:8888 ghcr.io/rodolfonuneslopes/fogos:latest
+```
+
+Or build it from source:
+
+```bash
+docker build -t fogos:local .
+docker run --rm -p 8888:8888 fogos:local
+```
+
+Pass any of the [Modes](#modes) environment variables with `-e`, e.g.
+`-e FOGOS_MOCK=true`.
+
+## Running with Docker Compose
+
+```bash
+docker compose up -d
+```
+
+See [docker-compose.yml](docker-compose.yml) — it pulls the published image
+by default; uncomment `build: .` to build from source instead. Edit the
+`environment:` block to switch modes or set a `FOGOS_TOKEN`.
+
 ## Modes
 
 Three modes are available, controlled entirely by environment variables:
