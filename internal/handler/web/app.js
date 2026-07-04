@@ -91,7 +91,6 @@ function render() {
           <span class="status-badge ${STATUS_CLASSES[inc.statusCode] || 'status-unknown'}">${esc(inc.status || '—')}</span>
           <span>${meiosMeta}</span>
         </span>
-        ${inc.date ? `<span class="date">Início: ${esc(inc.date)} ${esc(inc.hour)}</span>` : ''}
       </p>
       ${inc.id ? `<a class="source-link" href="https://fogos.pt/pt/fogo/${encodeURIComponent(inc.id)}/detalhe" target="_blank" rel="noopener noreferrer">Ver mais informações ↗</a>` : ''}
     `;
