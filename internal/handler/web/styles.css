@@ -59,7 +59,7 @@ footer {
 
 #incidents article {
   margin-bottom: 0;
-  border: 1px solid var(--pico-muted-border-color);
+  border: 1px solid var(--pico-color);
 }
 
 #incidents article header {
