@@ -116,7 +116,7 @@ function render() {
           <h3>${title}</h3>
         </header>
         ${meiosMeta ? `<p class="meta meios">${meiosMeta}</p>` : ''}
-        ${inc.id ? `<a class="source-link" href="https://fogos.pt/pt/fogo/${encodeURIComponent(inc.id)}/detalhe" target="_blank" rel="noopener noreferrer">Ver mais informações ↗</a>` : ''}
+        ${inc.id ? `<a role="button" class="outline secondary details-btn" href="https://fogos.pt/pt/fogo/${encodeURIComponent(inc.id)}/detalhe" target="_blank" rel="noopener noreferrer">Detalhes</a>` : ''}
       `;
       list.appendChild(card);
     }
