@@ -1,6 +1,6 @@
 services:
   fogos:
-    image: ghcr.io/rodolfonuneslopes/fogos:0.1.3
+    image: ghcr.io/rodolfonuneslopes/fogos:latest
     # Uncomment to build from source instead of pulling the published image:
     # build: .
     restart: unless-stopped
