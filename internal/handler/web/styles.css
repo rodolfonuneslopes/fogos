@@ -54,9 +54,31 @@ footer {
   text-align: center;
 }
 
-/* Incident cards */
+/* Status groups: one collapsible card per status, click to reveal its incidents */
 #incidents { display: flex; flex-direction: column; gap: 0.5rem; }
 
+.status-group {
+  margin-bottom: 0;
+  border: 1px solid var(--pico-color);
+  border-radius: var(--pico-border-radius);
+  padding: var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);
+  background: var(--pico-card-background-color);
+}
+
+.status-group-count {
+  color: var(--pico-muted-color);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  margin-inline-start: 0.5rem;
+}
+
+.status-group-incidents {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Incident cards (inside an open status group) */
 #incidents article {
   margin-bottom: 0;
   border: 1px solid var(--pico-color);
@@ -101,8 +123,7 @@ footer {
 .meta { margin: 0; color: var(--pico-muted-color); font-size: 0.875rem; }
 
 .source-link { display: inline-block; margin-top: 0.5rem; font-size: 0.875rem; }
-.meta.meios { font-size: 1.25rem; display: flex; align-items: center; }
-.meios-left { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.meta.meios { font-size: 1.25rem; }
 
 /* Status message (loading / no fires) */
 #status { text-align: center; color: var(--pico-muted-color); padding: 2rem 0; }
