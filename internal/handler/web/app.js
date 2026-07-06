@@ -1,6 +1,9 @@
 'use strict';
 
-import { sortIncidents, groupByStatus, filterIncidents, esc } from './logic.js';
+// Static files are served with a 1-year immutable Cache-Control, so bump the
+// ?v= here whenever logic.js's exports change — otherwise a cached old copy
+// can be served under this unchanged URL even after app.js itself updates.
+import { sortIncidents, groupByStatus, filterIncidents, esc } from './logic.js?v=1';
 
 // Maps to CSS classes in styles.css rather than inline styles, since the
 // Content-Security-Policy (default-src 'self') blocks inline style attributes.
