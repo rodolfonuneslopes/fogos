@@ -115,7 +115,7 @@ footer {
    under the Content-Security-Policy (default-src 'self'). */
 .status-badge.status-alert     { background: #FF6E02; } /* Despacho de 1º Alerta */
 .status-badge.status-active    { background: #B81E1F; } /* Em Curso */
-.status-badge.status-resolving { background: #FF6E02; } /* Em Resolução */
+.status-badge.status-resolving { background: #FFC107; color: #3a2e00; } /* Em Resolução */
 .status-badge.status-concluded { background: #BDBDBD; } /* Conclusão */
 .status-badge.status-watch     { background: #6ABF59; } /* Vigilância */
 .status-badge.status-unknown   { background: #BDBDBD; }
