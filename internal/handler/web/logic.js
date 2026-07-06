@@ -15,6 +15,24 @@ export function sortIncidents(incidents) {
   });
 }
 
+// Groups incidents by statusCode, preserving the order statuses first appear
+// in — pass an already-sorted array (see sortIncidents) to get groups back in
+// severity order.
+export function groupByStatus(incidents) {
+  const groups = [];
+  const byCode = new Map();
+  for (const inc of incidents) {
+    let group = byCode.get(inc.statusCode);
+    if (!group) {
+      group = { statusCode: inc.statusCode, status: inc.status, incidents: [] };
+      byCode.set(inc.statusCode, group);
+      groups.push(group);
+    }
+    group.incidents.push(inc);
+  }
+  return groups;
+}
+
 export function filterIncidents(incidents, distrito, concelho) {
   return incidents.filter(inc =>
     (!distrito || inc.district === distrito) &&

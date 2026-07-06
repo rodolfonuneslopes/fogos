@@ -33,7 +33,10 @@ func securityHeaders(next http.Handler) http.Handler {
 		h.Set("Referrer-Policy", "no-referrer")
 		h.Set("Permissions-Policy", "geolocation=(), camera=(), microphone=()")
 		h.Set("X-Frame-Options", "DENY")
-		h.Set("Content-Security-Policy", "default-src 'self'; base-uri 'none'; frame-ancestors 'none'")
+		// img-src allows data: on top of 'self' because Pico CSS renders its
+		// built-in icons (accordion chevron, checkbox, spinner, ...) as
+		// inline data: URI SVG background-images; default-src alone blocks them.
+		h.Set("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'")
 		h.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		next.ServeHTTP(w, r)
 	})

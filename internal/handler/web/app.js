@@ -1,6 +1,6 @@
 'use strict';
 
-import { sortIncidents, filterIncidents, esc } from './logic.js';
+import { sortIncidents, groupByStatus, filterIncidents, esc } from './logic.js';
 
 // Maps to CSS classes in styles.css rather than inline styles, since the
 // Content-Security-Policy (default-src 'self') blocks inline style attributes.
@@ -66,35 +66,62 @@ function render() {
   const sorted = sortIncidents(filteredIncidents());
   statusEl.hidden = true;
   statusEl.removeAttribute('aria-busy');
-  incidentsEl.innerHTML = '';
 
   if (sorted.length === 0) {
+    incidentsEl.innerHTML = '';
     statusEl.textContent = 'Sem fogos ativos.';
     statusEl.hidden = false;
     return;
   }
 
-  for (const inc of sorted) {
-    const card = document.createElement('article');
-    const meiosMeta = (inc.man || inc.terrain || inc.aerial)
-      ? `🧑‍🚒 ${inc.man} · 🚒 ${inc.terrain} · 🚁 ${inc.aerial}`
-      : '';
-    const title = concelhoEl.value
-      ? esc(inc.freguesia || '—')
-      : esc((inc.concelho ? inc.concelho + ' — ' : '') + (inc.freguesia || '—'));
-    card.innerHTML = `
-      <header>
-        <h3>${title}</h3>
-      </header>
-      <p class="meta meios">
-        <span class="meios-left">
-          <span class="status-badge ${STATUS_CLASSES[inc.statusCode] || 'status-unknown'}">${esc(inc.status || '—')}</span>
-          <span>${meiosMeta}</span>
+  // Re-rendering rebuilds every <details> from scratch (e.g. on every 60s
+  // auto-refresh), so remember which status groups were expanded and
+  // restore that instead of silently collapsing whatever the user had open.
+  const openStatusCodes = new Set(
+    [...incidentsEl.querySelectorAll('details.status-group[open]')]
+      .map(d => d.dataset.statusCode)
+  );
+
+  incidentsEl.innerHTML = '';
+
+  for (const group of groupByStatus(sorted)) {
+    const statusClass = STATUS_CLASSES[group.statusCode] || 'status-unknown';
+    const count = group.incidents.length;
+
+    const details = document.createElement('details');
+    details.className = 'status-group';
+    details.dataset.statusCode = group.statusCode;
+    details.open = openStatusCodes.has(String(group.statusCode));
+    details.innerHTML = `
+      <summary>
+        <span class="status-group-summary">
+          <span class="status-badge ${statusClass}">${esc(group.status || '—')}</span>
+          <span class="status-group-count">${count} ${count === 1 ? 'fogo' : 'fogos'}</span>
         </span>
-      </p>
-      ${inc.id ? `<a class="source-link" href="https://fogos.pt/pt/fogo/${encodeURIComponent(inc.id)}/detalhe" target="_blank" rel="noopener noreferrer">Ver mais informações ↗</a>` : ''}
+      </summary>
+      <div class="status-group-incidents"></div>
     `;
-    incidentsEl.appendChild(card);
+
+    const list = details.querySelector('.status-group-incidents');
+    for (const inc of group.incidents) {
+      const card = document.createElement('article');
+      const meiosMeta = (inc.man || inc.terrain || inc.aerial)
+        ? `🧑‍🚒 ${inc.man} · 🚒 ${inc.terrain} · 🚁 ${inc.aerial}`
+        : '';
+      const title = concelhoEl.value
+        ? esc(inc.freguesia || '—')
+        : esc((inc.concelho ? inc.concelho + ' — ' : '') + (inc.freguesia || '—'));
+      card.innerHTML = `
+        <header>
+          <h3>${title}</h3>
+        </header>
+        ${meiosMeta ? `<p class="meta meios">${meiosMeta}</p>` : ''}
+        ${inc.id ? `<a role="button" class="outline secondary details-btn" href="https://fogos.pt/pt/fogo/${encodeURIComponent(inc.id)}/detalhe" target="_blank" rel="noopener noreferrer">Detalhes</a>` : ''}
+      `;
+      list.appendChild(card);
+    }
+
+    incidentsEl.appendChild(details);
   }
 }
 

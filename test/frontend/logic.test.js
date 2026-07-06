@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sortIncidents, filterIncidents, esc } from '../../internal/handler/web/logic.js';
+import { sortIncidents, groupByStatus, filterIncidents, esc } from '../../internal/handler/web/logic.js';
 
 test('sortIncidents orders by severity first', () => {
   const incidents = [
@@ -39,6 +39,30 @@ test('sortIncidents does not mutate the input array', () => {
   const original = [...incidents];
   sortIncidents(incidents);
   assert.deepEqual(incidents, original);
+});
+
+test('groupByStatus groups incidents sharing a statusCode together', () => {
+  const incidents = [
+    { statusCode: 5, status: 'Em Curso' },
+    { statusCode: 9, status: 'Vigilância' },
+    { statusCode: 5, status: 'Em Curso' },
+  ];
+  const groups = groupByStatus(incidents);
+  assert.equal(groups.length, 2);
+  assert.equal(groups[0].statusCode, 5);
+  assert.equal(groups[0].incidents.length, 2);
+  assert.equal(groups[1].statusCode, 9);
+  assert.equal(groups[1].incidents.length, 1);
+});
+
+test('groupByStatus preserves first-seen order of statuses', () => {
+  const incidents = [
+    { statusCode: 8, status: 'Conclusão' },
+    { statusCode: 5, status: 'Em Curso' },
+    { statusCode: 9, status: 'Vigilância' },
+  ];
+  const groups = groupByStatus(incidents);
+  assert.deepEqual(groups.map(g => g.statusCode), [8, 5, 9]);
 });
 
 test('filterIncidents returns all incidents when no filters set', () => {
