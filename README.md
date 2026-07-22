@@ -18,7 +18,6 @@ The Go backend does two jobs: it serves the SPA (embedded directly in the binary
 - [Configuration](#configuration)
 - [API reference](#api-reference)
 - [Testing](#testing)
-- [Deployment](#deployment)
 - [License](#license)
 
 ## Features
@@ -200,16 +199,6 @@ make test-go      # Go: upstream client edge cases (empty/null/malformed/error r
                   # cache + singleflight coalescing, concelho validation, security headers
 make test-js      # Node: incident sorting, status grouping, district/concelho filtering
 ```
-
-## Deployment
-
-Deeper operational write-ups live in [implementation-docs/](implementation-docs/):
-
-- [INITIAL_DEPLOYMENT.md](implementation-docs/INITIAL_DEPLOYMENT.md) — first production rollout notes.
-- [KUBERNETES_DEPLOYMENT.md](implementation-docs/KUBERNETES_DEPLOYMENT.md) — running fogos on Kubernetes.
-- [image-publishing.md](implementation-docs/image-publishing.md) — how/when container images get built and pushed to GHCR.
-- [SECURITY_HARDENING.md](implementation-docs/SECURITY_HARDENING.md) — the reasoning behind the security headers and timeouts.
-- [PERFORMANCE_OPTIMIZATIONS.md](implementation-docs/PERFORMANCE_OPTIMIZATIONS.md) — the reasoning behind the cache/singleflight design.
 
 ## License
 
