@@ -130,7 +130,7 @@ All configuration is via environment variables — see [.env.example](.env.examp
 |---|---|---|
 | `LISTEN_ADDR` | `:8888` | Address the server listens on |
 | `FOGOS_BASE_URL` | `https://api.fogos.pt` | Base URL of the upstream fogos.pt API |
-| `FOGOS_TOKEN` | _(unset)_ | Optional upstream auth token, sent as `FOGOS-PT-AUTH` header. Never exposed to the browser |
+| `FOGOS_TOKEN` | _(unset)_ | Optional upstream auth token, sent as both `X-API-KEY` (enforced by the API gateway) and `FOGOS-PT-AUTH` (fogos.pt's documented header). Never exposed to the browser |
 | `FOGOS_MOCK` | `false` | When `true`, bypasses the upstream API entirely and serves fake data |
 
 Three modes fall out of these variables:

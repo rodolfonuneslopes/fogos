@@ -82,3 +82,48 @@ func TestActiveIncidents_MalformedJSON(t *testing.T) {
 		t.Fatal("expected error for malformed JSON")
 	}
 }
+
+// captureHeaders serves an empty incident list and records the request headers.
+func captureHeaders(t *testing.T, got *http.Header) *httptest.Server {
+	t.Helper()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		*got = r.Header.Clone()
+		_, _ = w.Write([]byte(`{"data":[]}`))
+	}))
+}
+
+// Both auth headers must be sent: X-API-KEY is what the upstream gateway
+// enforces, FOGOS-PT-AUTH is what fogos.pt documents.
+func TestActiveIncidents_SendsBothAuthHeaders(t *testing.T) {
+	var got http.Header
+	ts := captureHeaders(t, &got)
+	defer ts.Close()
+
+	c := fogos.New(ts.URL, "test-token")
+	if _, err := c.ActiveIncidents("Castelo Branco"); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	for _, h := range []string{"X-API-KEY", "FOGOS-PT-AUTH"} {
+		if v := got.Get(h); v != "test-token" {
+			t.Errorf("%s = %q, want %q", h, v, "test-token")
+		}
+	}
+}
+
+func TestActiveIncidents_NoTokenSendsNoAuthHeaders(t *testing.T) {
+	var got http.Header
+	ts := captureHeaders(t, &got)
+	defer ts.Close()
+
+	c := fogos.New(ts.URL, "")
+	if _, err := c.ActiveIncidents("Castelo Branco"); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	for _, h := range []string{"X-API-KEY", "FOGOS-PT-AUTH"} {
+		if v := got.Get(h); v != "" {
+			t.Errorf("%s = %q, want it unset", h, v)
+		}
+	}
+}

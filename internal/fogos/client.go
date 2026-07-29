@@ -68,7 +68,13 @@ func (c *client) ActiveIncidents(concelho string) ([]Incident, error) {
 		return nil, fmt.Errorf("build request: %w", err)
 	}
 	if c.token != "" {
+		// fogos.pt's docs specify FOGOS-PT-AUTH, but the gateway in front of the
+		// API only enforces X-API-KEY: a bogus key there returns 403
+		// invalid_api_key, while any value on FOGOS-PT-AUTH is ignored and
+		// returns 200 exactly as if no token were sent. Send both, so we honour
+		// the documented contract and the one actually enforced.
 		req.Header.Set("FOGOS-PT-AUTH", c.token)
+		req.Header.Set("X-API-KEY", c.token)
 	}
 	req.Header.Set("User-Agent", userAgent)
 
