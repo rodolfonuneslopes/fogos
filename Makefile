@@ -15,7 +15,9 @@ test-go:
 	go test ./...
 
 test-js:
-	node --test test/
+	# Quoted so Node expands the glob itself: a bare directory argument is
+	# resolved as a module entry point and fails with MODULE_NOT_FOUND.
+	node --test 'test/**/*.test.js'
 
 fmt:
 	gofmt -w .
