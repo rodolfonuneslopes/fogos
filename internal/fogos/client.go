@@ -3,8 +3,10 @@ package fogos
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -68,13 +70,13 @@ func (c *client) ActiveIncidents(concelho string) ([]Incident, error) {
 		return nil, fmt.Errorf("build request: %w", err)
 	}
 	if c.token != "" {
-		// fogos.pt's docs specify FOGOS-PT-AUTH, but the gateway in front of the
-		// API only enforces X-API-KEY: a bogus key there returns 403
-		// invalid_api_key, while any value on FOGOS-PT-AUTH is ignored and
-		// returns 200 exactly as if no token were sent. Send both, so we honour
-		// the documented contract and the one actually enforced.
-		req.Header.Set("FOGOS-PT-AUTH", c.token)
-		req.Header.Set("X-API-KEY", c.token)
+		// X-API-Key is the only auth header the upstream accepts. Sending the
+		// older FOGOS-PT-AUTH alongside it is now a hard failure: the gateway
+		// checks for that header *before* validating the key and rejects the
+		// whole request with 403 unsupported_auth_header ("The header
+		// FOGOS-PT-AUTH is not supported"), however valid the key is. It used
+		// to be silently ignored, which is why both were once sent.
+		req.Header.Set("X-API-Key", c.token)
 	}
 	req.Header.Set("User-Agent", userAgent)
 
@@ -85,7 +87,12 @@ func (c *client) ActiveIncidents(concelho string) ([]Incident, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("upstream returned %d", resp.StatusCode)
+		// Carry a bounded snippet of the body: the upstream's failure modes are
+		// indistinguishable by status alone (invalid_api_key,
+		// unsupported_auth_header and rate_limit_exceeded all arrive as 4xx
+		// JSON), and the distinction is the whole diagnosis.
+		snippet, _ := io.ReadAll(io.LimitReader(resp.Body, 256))
+		return nil, fmt.Errorf("upstream returned %d: %s", resp.StatusCode, strings.TrimSpace(string(snippet)))
 	}
 
 	var result struct {

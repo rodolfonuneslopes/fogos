@@ -92,9 +92,10 @@ func captureHeaders(t *testing.T, got *http.Header) *httptest.Server {
 	}))
 }
 
-// Both auth headers must be sent: X-API-KEY is what the upstream gateway
-// enforces, FOGOS-PT-AUTH is what fogos.pt documents.
-func TestActiveIncidents_SendsBothAuthHeaders(t *testing.T) {
+// X-API-Key is the only auth header the upstream accepts. FOGOS-PT-AUTH must
+// never be sent: its mere presence makes the gateway reject the request with
+// 403 unsupported_auth_header, whatever the key is worth.
+func TestActiveIncidents_SendsOnlyAPIKeyHeader(t *testing.T) {
 	var got http.Header
 	ts := captureHeaders(t, &got)
 	defer ts.Close()
@@ -104,10 +105,11 @@ func TestActiveIncidents_SendsBothAuthHeaders(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	for _, h := range []string{"X-API-KEY", "FOGOS-PT-AUTH"} {
-		if v := got.Get(h); v != "test-token" {
-			t.Errorf("%s = %q, want %q", h, v, "test-token")
-		}
+	if v := got.Get("X-API-Key"); v != "test-token" {
+		t.Errorf("X-API-Key = %q, want %q", v, "test-token")
+	}
+	if v := got.Get("FOGOS-PT-AUTH"); v != "" {
+		t.Errorf("FOGOS-PT-AUTH = %q, want it unset", v)
 	}
 }
 

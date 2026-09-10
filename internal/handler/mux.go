@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -70,6 +71,10 @@ func incidentsHandler(client fogos.Client, cache *incidentCache) http.HandlerFun
 			return b, nil
 		})
 		if err != nil {
+			// Log it: the browser only ever sees a flat 502, so without this
+			// the pod logs give no clue whether the upstream rejected our
+			// credentials, throttled us, or was simply unreachable.
+			log.Printf("incidents fetch failed (concelho=%q): %v", concelho, err)
 			http.Error(w, "upstream error", http.StatusBadGateway)
 			return
 		}
