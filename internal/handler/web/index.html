@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt" data-theme="auto">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fogos Ativos</title>
+  <!-- Before the page draws: applies a saved light/dark choice (no inline scripts under the CSP). -->
+  <script src="theme.js?v=1"></script>
   <link rel="stylesheet" href="pico.red.min.css?v=1" />
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=15" />
 </head>
 <body>
   <header class="container-fluid">
@@ -23,6 +25,12 @@
           <select id="concelho" aria-label="Concelho" disabled>
             <option value="">Todos os concelhos</option>
           </select>
+        </li>
+      </ul>
+      <ul class="theme">
+        <li>
+          <!-- Light/dark toggle, wired up by theme.js. -->
+          <button id="theme-toggle" class="theme-toggle secondary outline" type="button" hidden>🌙</button>
         </li>
       </ul>
     </nav>

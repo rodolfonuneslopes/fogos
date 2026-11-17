@@ -24,6 +24,7 @@ The Go backend does two jobs: it serves the SPA (embedded directly in the binary
 
 - **District/concelho filtering** — dropdowns are populated dynamically from whatever incidents are currently active, no static district→concelho mapping to maintain.
 - **Grouped by status** — incidents are bucketed into collapsible sections (Em Curso, Despacho de 1º Alerta, Em Resolução, Vigilância, Conclusão), sorted by severity and then by resources deployed. Expanded/collapsed state survives auto-refresh.
+- **Light and dark** — follows the device's setting; the ☀️/🌙 button (top right) switches and is remembered in the browser. Applied by `theme.js` before the first paint (the CSP forbids inline scripts).
 - **Auto-refresh** — polls every 60s, pauses via the Page Visibility API when the tab isn't active, and links out to the fogos.pt detail page for each incident.
 - **Mock mode** — `FOGOS_MOCK=true` serves realistic fake incidents with no network calls, for offline frontend work (see [Configuration](#configuration)).
 - **Good API citizenship** — server-side response cache (60s TTL) plus [singleflight](https://pkg.go.dev/golang.org/x/sync/singleflight) request coalescing, so a burst of concurrent browser requests for the same concelho triggers at most one upstream call.

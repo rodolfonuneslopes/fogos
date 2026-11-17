@@ -5,9 +5,17 @@ body {
 }
 
 header {
+  position: relative; /* anchors the theme toggle on small screens */
   border-bottom: 1px solid var(--pico-muted-border-color);
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+
+/* Light/dark toggle, top right. */
+header .theme-toggle {
+  padding: 0.3rem 0.55rem;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 header .filters {
@@ -38,6 +46,14 @@ header select {
   header select {
     width: 100%;
     min-width: 0;
+  }
+
+  /* The filters stack below the title; keep the toggle in the top-right
+     corner, level with the title, instead of under them. */
+  header .theme {
+    position: absolute;
+    top: 0.75rem;
+    right: var(--pico-spacing);
   }
 }
 
